@@ -2,7 +2,7 @@
 Solve shortest path problems with uncertainty using Benders decomposition method
 
 ## 1. Problem Description
-There are many sophisticated algorithms (e.x. Dijkstra, Bellman Ford Algorithm) to find shortest path in a weighted directed graph. Unfortunately, it is not a trivial task to exactly estimate the weights of the arcs; they are usually dependent on other factors which are difficult to predict. Nevertheless, it is possible to specify a lower and upper bound for the cost of each arc.
+There are many sophisticated algorithms (e.x. Dijkstra, Bellman Ford Algorithm) to find shortest path in a weighted directed graph. Unfortunately, it is not a trivial task to exactly estimate the weights of the arcs; they are usually dependent on other factors (e.x. weather condition, traffic accidents) which are difficult to predict. Nevertheless, it is possible to specify a lower and upper bound for the cost of each arc.
 
 The precise objective is to find a path *p* from source *s* to destination *t* on a weighted directed graph for which the difference between the length of the path *p* and the length of the shortest path from *s* to *t* in the graph is the smallest, subject to when the lengths of all arcs on the path *p* are at their upper bounds and the lengths of all other arcs are at their lower bounds.
 
@@ -29,7 +29,7 @@ There are a couple of additional constraints to be considered. The source node *
 </p>
 
 ## 4. Benders Decomposition
-Benders decomposition approach can be used to solve this mixed integer programming problem. The basic idea behind this approach is divide-and-conquer. The original problem is divided into two subproblems; in this case, the first subproblem involves only x and the second subproblem involved only y. The first subproblem is solved over x and the solution for the second subproblem is determined for a given solution of the first subproblem. 
+Benders decomposition approach can be used to solve this mixed integer programming problem. The basic idea behind this approach is divide-and-conquer. The original problem is divided into two subproblems; in this case, the first subproblem involves only x and the second subproblem involves only y. The first subproblem is solved over x and the solution for the second subproblem is determined for a given solution of the first subproblem. 
 
 If y is fixed at any **Y**, the original problem becomes a maximization problem with respect to x<sub>t</sub>.
 <p align="center">
@@ -46,7 +46,7 @@ Let R represent the feasible region of the w and let P<sub>R</sub> represent a s
     <img src="images/dual2.jpg" height=90><br/>
 </p>
 
-Initially, P<sub>R</sub> is an empty set. At each iteration, the subproblem (the dual) is solved, the PR is populated by including w if w is an extreme point, and a new cut is added to the master problem. The objective function value of the dual and the master problem corresponds to the upper and lower bound of the original problem; the optimal solution is found when they are equal.
+Initially, P<sub>R</sub> is an empty set. At each iteration, the subproblem (the dual) is solved, the P<sub>R</sub> is populated by including w if w is an extreme point, and a new cut is added to the master problem. The objective function value of the dual and the master problem corresponds to the upper and lower bound of the original problem; the optimal solution is found when they are equal.
 
 The pseudocode below summarizes the Benders decomposition algorithm.
 <p align="left">
@@ -61,7 +61,7 @@ The graph is represented by 2 square matrices (upper and lower bound of arc leng
 We will start with a basic weighted directed graph to ensure that the algorithm works. See [video](https://www.youtube.com/watch?v=hICetc1Sds0) for my explanation on how Bender's decomposition method work on a toy example.
 
 ### 5.3 Implementation Simulation
-See python file for the implementation in Python and jupyter notebook for the comparison between Bender's decomposition and Branch & cut in [CPLEX](https://www.ibm.com/analytics/cplex-optimizer), which is a library of optimized algorithm used as mathematical programming solvers. The table below summarizes the result of running time.
+[Here](https://github.com/martinzwm/robust-shortest-path/blob/master/robust_shortest_path.py) is the implementation in Python and [here](https://github.com/martinzwm/robust-shortest-path/blob/master/RSP.ipynb) is the comparison between Bender's Decomposition and Branch & Cut in [CPLEX](https://www.ibm.com/analytics/cplex-optimizer), which is a library of optimized algorithm used as mathematical programming solvers. The table below summarizes the result of running time.
 <p align="center">
     <img src="images/BD_vs_BC.jpg" height=220><br/>
 </p>
@@ -69,11 +69,11 @@ See python file for the implementation in Python and jupyter notebook for the co
 Theoretically, Benders Decomposition should outperform Branch and Cut as the problem scales up and the graph is sparse. However, in this project, Branch and Cut seems to outperform Benders Decomposition. We suspect that this is due to the implementation of the Benders Decomposition for this paper may not be optimal as it was created by my team of university students and not optimized by experts as CPLEX has.
 
 ## 6. Next steps
-There were several ideas that were not able to be implemented due to time constraint. As the recommendations of the next steps, one should investigate the performance of Benders decomposition with large dataset on GPU or cloud computing. Furthermore, since real road data would yield to very sparse graphs, it is more efficient to represent such graphs with adjacency lists compare to adjacency matrices. The corresponding complexities are O(V+E) and O(V<sup>2</sup>), where V is the number of nodes and E is the number of arcs. For sparse graphs, adjacency list is able to bring down the time complexity from quadratic to linear, which would scale significantly better as the number of node increases
+There were several ideas that were not able to be implemented due to time constraint. As the recommendations of the next steps, one should investigate the performance of Benders decomposition with large dataset on GPU or cloud computing. Furthermore, since real road data would yield to very sparse graphs, it is more efficient to represent such graphs with adjacency lists instead of adjacency matrices. The corresponding complexities are O(V+E) and O(V<sup>2</sup>), where V is the number of nodes and E is the number of arcs. For sparse graphs, adjacency list is able to bring down the time complexity from quadratic to linear, which would scale significantly better as the number of node increases.
 
 ## Acknowledgement
-This project is instructed by Professor James Bookbinder. This report was written in partial fulfillment of the requirements for MSCI 435 (Advanced Optimization).
+This project is instructed by Professor [James Bookbinder](https://uwaterloo.ca/management-sciences/about/people/jbookbin). This report was written in partial fulfillment of the requirements for MSCI 435 (Advanced Optimization).
 
 If you would like a copy of the report, [here](https://drive.google.com/file/d/1IRD3I72prNdJQE_aOCD04uA0D40w2Pzx/view?usp=sharing) is the link to download it.
 
-I would like to especially thank my teammates Mustafa Shahbaz and Mark Qi for the hard work and late nights of brainstorming.
+I would like to especially thank my teammates [Mustafa Shahbaz](https://www.linkedin.com/in/mustafashahbaz/?originalSubdomain=ca) and Mark Qi for the hard work and late nights of brainstorming.
